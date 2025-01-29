@@ -1,8 +1,18 @@
 import pandas as pd
+import math
 
 
-def entropy(D):
-    return 0
+
+def entropy(C):
+
+    val = C.unique()
+    entropy = 0
+    for i in val:
+        Pr = C.value_counts()[i]/C.count()
+        print(Pr)
+        entropy = (Pr * math.log(Pr))
+        return -entropy
+
 
 def Gain(D,A):
     return entropy(D) - entropy_A(D,A)
@@ -44,6 +54,10 @@ def selectSplittingAttribute2(A,D,threshold):
 
 def main():
     df = pd.read_csv('balloon.csv')
+    Y = df['Inflated']
+    D = df.loc[:,df.columns != 'Inflated']
+    print(D)
+    entropy(Y)
     print(df)
 
 
