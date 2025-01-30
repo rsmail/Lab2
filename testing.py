@@ -36,30 +36,6 @@ best := arg(findMax(Gain[]));
 if Gain[best] >threshold then return best else return NULL;
 '''
 
-def selectSplittingAttribut(A,D,threshold):
-    p_0 = entropy(D)
-    Gain = list()
-    for i in A:
-        Gain[i]=p_0 - entropy(i)
-    best = index(Max(Gain))
-    if Gain[best] > threshold:
-        return best
-    else:
-        return NULL 
-    
-def selectSplittingAttribute2(A,D,threshold):
-    p_0 = entropy(D)
-    Gain = list()
-    gainRatio = list()
-    for i in A:
-        a_ent = entropy(i)
-        Gain[i]=p_0 - entropy(i)
-        gainRatio[i]= Gain[i]/a_ent
-    best = index(Max(gainRatio))
-    if Gain[best] > threshold:
-        return best
-    else:
-        return NULL 
 
 def selectSplittingAttribute(df,target, threshold):
     C = df[target]
@@ -80,14 +56,30 @@ def selectSplittingAttribute(df,target, threshold):
         return max(Gain, key=Gain.get)
     else:
         return None
+    
+def buildTree(df, target, threshold):
+    best_split = selectSplittingAttribute(df,target,threshold)
+    if best_split == None:
+        print("No further splitting")
+    else:
+        edges = df[best_split].unique()
+
+        splitD = list()
+        for i in edges:
+            splitD.append(df[df[best_split]==i].loc[:,df.columns != best_split])
+        
+        for data in splitD:
+            print(data)
+            buildTree(data, target, threshold)
+
 
 def main():
     df = pd.read_csv('balloon.csv')
     target = 'Inflated'
-    threshold = 0.02
+    threshold = 0.05
 
-    best_split = selectSplittingAttribute(df,target,threshold)
-    print(best_split)
+    buildTree(df, target, threshold)
+
        
 
 
