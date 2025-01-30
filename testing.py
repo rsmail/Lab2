@@ -12,6 +12,7 @@ def entropy(C):
         entropy = (Pr * math.log(Pr))
         return -entropy
 
+'''
 def entropy_Aj(D,C):
 
     val = D.unique()
@@ -25,7 +26,7 @@ def entropy_Aj(D,C):
 
 def Gain(D,A):
     return entropy(D) - entropy_Aj(D,A)
-'''
+
 function selectSplittingAttribute(A,D,threshold);
 information gain p0 := enthropy(D); 
 for each Ai ∈ Ado p[Ai] := enthropyAi (D);
@@ -35,7 +36,7 @@ best := arg(findMax(Gain[]));
 if Gain[best] >threshold then return best else return NULL;
 '''
 
-def selectSplittingAttribute(A,D,threshold):
+def selectSplittingAttribut(A,D,threshold):
     p_0 = entropy(D)
     Gain = list()
     for i in A:
@@ -60,7 +61,7 @@ def selectSplittingAttribute2(A,D,threshold):
     else:
         return NULL 
 
-def findgain(df,target):
+def selectSplittingAttribute(df,target, threshold):
     C = df[target]
     D = df.loc[:,df.columns != target]
     D0 = entropy(C)
@@ -75,13 +76,17 @@ def findgain(df,target):
            S=len(Cj)
            entAj = entAj + S/length *entropy(Cj)
        Gain.update({curr:D0-entAj})
-    return max(Gain, key=Gain.get)
+    if max(Gain.values()) >  threshold:
+        return max(Gain, key=Gain.get)
+    else:
+        return None
 
 def main():
     df = pd.read_csv('balloon.csv')
     target = 'Inflated'
+    threshold = 0.02
 
-    best_split = findgain(df,target)
+    best_split = selectSplittingAttribute(df,target,threshold)
     print(best_split)
        
 
