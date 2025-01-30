@@ -60,23 +60,30 @@ def selectSplittingAttribute2(A,D,threshold):
     else:
         return NULL 
 
+def findgain(df,target):
+    C = df[target]
+    D = df.loc[:,df.columns != target]
+    D0 = entropy(C)
+    Gain = {}
+
+    for curr in D.columns:
+       A=D[curr].unique()
+       length = len(D)
+       entAj = 0
+       for i in A:
+           Cj = C[D[curr] == i]
+           S=len(Cj)
+           entAj = entAj + S/length *entropy(Cj)
+       Gain.update({curr:D0-entAj})
+    return max(Gain, key=Gain.get)
 
 def main():
     df = pd.read_csv('balloon.csv')
     target = 'Inflated'
-    C = df[target]
-    D = df.loc[:,df.columns != target]
 
-    for curr in df.columns:
-       print(curr)
-       A=df[curr].unique()
-       length = len(df)
-       entAj = 0
-       for i in A:
-           Cj = C[df[curr] == i]
-           S=len(Cj)
-           entAj = entAj + S/length *entropy(Cj)
-       print(entAj)
+    best_split = findgain(df,target)
+    print(best_split)
+       
 
 
 main()
